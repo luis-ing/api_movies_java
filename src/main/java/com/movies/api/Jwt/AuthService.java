@@ -2,7 +2,6 @@ package com.movies.api.Jwt;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +11,7 @@ import com.movies.api.repositories.UserRepository;
 import com.movies.api.requestModels.LoginRequest;
 import com.movies.api.requestModels.RegisterRequest;
 import com.movies.api.responseModels.AuthResponse;
+import com.movies.api.responseModels.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,10 +28,19 @@ public class AuthService {
                 authenticationManager
                                 .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),
                                                 request.getPassword()));
-                UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+                User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
                 String token = jwtService.getToken(user);
+
+                UserResponse userResponse = UserResponse.builder()
+                                .id(user.getId())
+                                .name(user.getName())
+                                .username(user.getUsername())
+                                .role(user.getRole())
+                                .build();
+
                 return AuthResponse.builder()
                                 .token(token)
+                                .user(userResponse)
                                 .build();
         }
 

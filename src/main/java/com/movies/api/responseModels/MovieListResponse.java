@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-    String token;
-    UserResponse user;
+@AllArgsConstructor
+public class MovieListResponse {
+    private Long id;
+    private String title;
+    private String description;
+    private String imageUrl;
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.movies.api.models.Movie;
 import com.movies.api.repositories.MovieRepository;
+import com.movies.api.responseModels.MovieListResponse;
 
 @RestController
 @RequestMapping("/api/movie")
@@ -28,8 +29,19 @@ public class MovieController {
 
     @CrossOrigin
     @GetMapping("/list")
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    public List<MovieListResponse> getAllMovies() {
+        List<Movie> movies = movieRepository.findAll();
+
+        List<MovieListResponse> movieListResponses = movies.stream()
+                .map(movie -> MovieListResponse.builder()
+                        .id(movie.getId())
+                        .title(movie.getTitle())
+                        .description(movie.getDescription())
+                        .imageUrl(movie.getImageUrl())
+                        .build())
+                .toList();
+
+        return movieListResponses;
     }
 
     @CrossOrigin
